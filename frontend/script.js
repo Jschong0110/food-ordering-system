@@ -1,55 +1,29 @@
-// Sample menu items 
+// Updated to use backend API 
 
-const menuItems = [ 
+async function loadMenuFromAPI() { 
 
-    { id: 1, name: "Nasi Lemak", price: 5.50, category: "Malaysian" }, 
+    try { 
 
-    { id: 2, name: "Chicken Rice", price: 6.00, category: "Chinese" }, 
+        const response = await fetch('http://localhost:3000/api/menu'); 
 
-    { id: 3, name: "Roti Canai", price: 3.50, category: "Indian" } 
+        const result = await response.json(); 
 
-]; 
+         
 
-  
+        if (result.success) { 
 
-// Display menu items 
+            displayMenu(result.data); 
 
-function displayMenu() { 
+        } 
 
-    const menuContainer = document.getElementById('menu'); 
+    } catch (error) { 
 
-    menuItems.forEach(item => { 
+        console.error('Error loading menu:', error); 
 
-        const itemDiv = document.createElement('div'); 
+        // Fallback to sample data 
 
-        itemDiv.className = 'menu-item'; 
+        displayMenu(sampleMenuItems); 
 
-        itemDiv.innerHTML = \` 
-
-            <h3>\${item.name}</h3> 
-
-            <p>RM \${item.price.toFixed(2)}</p> 
-
-            <button class="order-button" onclick="addToCart(\${item.id})">Add to Cart</button> 
-
-        `; 
-
-        menuContainer.appendChild(itemDiv); 
-
-    }); 
+    } 
 
 } 
-
-  
-
-function addToCart(itemId) { 
-
-    alert('Added to cart! (Feature coming soon)'); 
-
-} 
-
-  
-
-// Load menu when page loads 
-
-document.addEventListener('DOMContentLoaded', displayMenu); 
