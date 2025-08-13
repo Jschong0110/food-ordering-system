@@ -34,7 +34,7 @@ router.get('/:id', async (req, res) => {
 
     try { 
 
-        const result = await pool.query('SELECT * FROM menu_items WHERE id = ', [req.params.id]); 
+        const result = await pool.query('SELECT * FROM menu_items WHERE id = $1', [req.params.id]); 
 
          
 

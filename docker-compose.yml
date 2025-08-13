@@ -2,6 +2,7 @@ services:
   # Web application (frontend + backend)
   app:
     build: .
+    container_name: My Custom Apache Server
     ports:
       - "3000:3000"
     environment:
@@ -15,6 +16,13 @@ services:
     volumes:
       - ./frontend:/app/public  # Serve frontend files
     restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]  # Command to check health
+      interval: 30s       # How often to run the check
+      timeout: 10s        # Fail if check takes longer than this
+      retries: 3          # How many consecutive failures before marking as unhealthy
+      start_period: 5s    # Grace period before starting checks
 
   # Database
   db:
