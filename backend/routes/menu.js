@@ -1,28 +1,28 @@
 const express = require('express'); 
 
-const pool = require('../config/database'); 
-
 const router = express.Router(); 
 
   
 
-// GET /api/menu - Get all menu items from database 
+// Sample menu data (will connect to database later) 
 
-router.get('/', async (req, res) => { 
+const menuItems = [ 
 
-    try { 
+    { id: 1, name: "Nasi Lemak", price: 5.50, category: "Malaysian", available: true }, 
 
-        const result = await pool.query('SELECT * FROM menu_items WHERE available = true'); 
+    { id: 2, name: "Chicken Rice", price: 6.00, category: "Chinese", available: true }, 
 
-        res.json({ success: true, data: result.rows }); 
+    { id: 3, name: "Roti Canai", price: 3.50, category: "Indian", available: true } 
 
-    } catch (error) { 
+]; 
 
-        console.error('Database error:', error); 
+  
 
-        res.status(500).json({ success: false, message: 'Database error' }); 
+// GET /api/menu - Get all menu items 
 
-    } 
+router.get('/', (req, res) => { 
+
+    res.json({ success: true, data: menuItems }); 
 
 }); 
 
@@ -30,31 +30,17 @@ router.get('/', async (req, res) => {
 
 // GET /api/menu/:id - Get specific menu item 
 
-router.get('/:id', async (req, res) => { 
+router.get('/:id', (req, res) => { 
 
-    try { 
+    const item = menuItems.find(item => item.id === parseInt(req.params.id)); 
 
-        const result = await pool.query('SELECT * FROM menu_items WHERE id = $1', [req.params.id]); 
+    if (!item) { 
 
-         
-
-        if (result.rows.length === 0) { 
-
-            return res.status(404).json({ success: false, message: 'Menu item not found' }); 
-
-        } 
-
-         
-
-        res.json({ success: true, data: result.rows[0] }); 
-
-    } catch (error) { 
-
-        console.error('Database error:', error); 
-
-        res.status(500).json({ success: false, message: 'Database error' }); 
+        return res.status(404).json({ success: false, message: 'Menu item not found' }); 
 
     } 
+
+    res.json({ success: true, data: item }); 
 
 }); 
 
