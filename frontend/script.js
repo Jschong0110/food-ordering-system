@@ -27,3 +27,8 @@ async function loadMenuFromAPI() {
     } 
 
 } 
+
+  
+
+// Rest of the code... 
+
