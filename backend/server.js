@@ -1,65 +1,34 @@
-const express = require('express'); 
+const express = require('express');
+const cors = require('cors');
+require('dotenv').config();
 
-const cors = require('cors'); 
+const menuRoutes = require('./routes/menu');
+const orderRoutes = require('./routes/orders');
 
-require('dotenv').config(); 
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-  
+// Middleware
+app.use(cors());
+app.use(express.json());
 
-const menuRoutes = require('./routes/menu'); 
+// Serve static frontend files
+app.use(express.static('public'));
 
-const orderRoutes = require('./routes/orders'); 
+// API Routes
+app.use('/api/menu', menuRoutes);
+app.use('/api/orders', orderRoutes);
 
-  
+app.get('/', (req, res) => {
+    res.json({
+        message: 'Food Ordering API is running!',
+        endpoints: [
+            'GET /api/menu - Get menu items',
+            'POST /api/orders - Create order'
+        ]
+    });
+});
 
-const app = express(); 
-
-const PORT = process.env.PORT || 3000; 
-
-  
-
-// Middleware 
-
-app.use(cors()); 
-
-app.use(express.json()); 
-
-  
-
-// Routes 
-
-app.use('/api/menu', menuRoutes); 
-
-app.use('/api/orders', orderRoutes); 
-
-  
-
-app.get('/', (req, res) => { 
-
-    res.json({  
-
-        message: 'Food Ordering API is running!', 
-
-        endpoints: [ 
-
-            'GET /api/menu - Get menu items', 
-
-            'POST /api/orders - Create order' 
-
-        ] 
-
-    }); 
-
-}); 
-
-  
-
-app.listen(PORT, () => { 
-
-    console.log(`Server running on port ${PORT}`); 
-
-}); 
-
- 
-
-#create a new line and enter EOF 
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
