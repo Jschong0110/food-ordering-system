@@ -1,27 +1,17 @@
-FROM bitnami/apache:latest 
+FROM node:16-alpine
 
-  
+WORKDIR /app
 
-# Copy our custom website files into the container 
+# Copy backend files
+COPY backend/package*.json ./
+RUN npm install --production
 
-COPY index.html /app/index.html 
+COPY backend/ .
 
-COPY about.html /app/about.html 
+# Copy frontend files to serve statically
+COPY frontend/ ./public/
 
-  
+EXPOSE 3000
 
-# Expose port 8080 (Bitnami Apache uses this port) 
-
-EXPOSE 8080 
-
-  
-
-# Add a label to identify our custom imcat age 
-
-LABEL description="My Custom Apache Server" 
-
-LABEL version="1.0" 
-
-LABEL student="Jschong" 
-
+CMD ["node", "server.js"]
 

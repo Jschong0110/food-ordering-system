@@ -1,8 +1,9 @@
 services:
-  # Web application (frontend + backend)
   app:
-    build: .
-    container_name: My Custom Apache Server
+    build:
+      context: .
+      dockerfile: backend/Dockerfile   # Point to the actual file
+    container_name: my-custom-node-server
     ports:
       - "3000:3000"
     environment:
@@ -14,17 +15,16 @@ services:
     depends_on:
       - db
     volumes:
-      - ./frontend:/app/public  # Serve frontend files
+      - ./frontend:/app/public
     restart: unless-stopped
 
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]  # Command to check health
-      interval: 30s       # How often to run the check
-      timeout: 10s        # Fail if check takes longer than this
-      retries: 3          # How many consecutive failures before marking as unhealthy
-      start_period: 5s    # Grace period before starting checks
+      test: ["CMD", "wget", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
 
-  # Database
   db:
     image: postgres:13-alpine
     environment:
@@ -32,7 +32,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=devpassword123
     ports:
-      - "5432:5432"  # For database inspection tools
+      - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
       - ./database/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
@@ -41,3 +41,4 @@ services:
 
 volumes:
   db_data:
+
